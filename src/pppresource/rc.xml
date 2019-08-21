@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Copyright (C) 2019 N216
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+-->
+
+<root>
+  
+  <!-- dummy -->
+
+  <tr key="dummy">
+    <en>dummy</en>
+    <jp>_仮_</jp>
+    <zh>_假_</zh>
+  </tr>
+  
+  <!-- info -->
+  
+  <tr key="--rc-help-info">
+    <en>Still a test version: dont use any way!!</en>
+    <jp>テストバージョンだ：使うな！</jp>
+    <zh>测试版：你敢用你自己用！</zh>
+  </tr>
+
+  <!-- desp -->
+  
+  <tr key="--rc-desp-vbmode">
+    <en>
+[0:none]
+[1:both]
+[2:outsource]
+[3:gas only]
+[4:oil only]
+    </en>
+    <jp>
+[0:無]
+[1:兼用]
+[2:外部]
+[3:ガス専用]
+[4:オイル専用]
+    </jp>
+    <zh>
+[0:无]
+[1:油气两用]
+[2:外部]
+[3:单烧气]
+[4:单烧油]
+    </zh>
+  </tr>
+  
+  <tr key="--rc-desp-vbctrl">
+    <en>
+[0:none]
+[1:protect relay]
+[2:outsource]
+[3:cds]
+[4:remain]
+    </en>
+    <jp>
+[0:無]
+[1:プロテクトリレー]
+[2:外部]
+[3:変更器]
+[4:%保留%]
+    </jp>
+    <zh>
+[0:无]
+[1:西门子程控器]
+[2:外部]
+[3:变送器]
+[4:%预留%]
+    </zh>
+  </tr>
+
+</root>
