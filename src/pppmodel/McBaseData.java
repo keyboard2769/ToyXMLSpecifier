@@ -31,11 +31,8 @@ import processing.data.XML;
  */
 public final class McBaseData {
   
-  private static McBaseData self = null;
-  public static final McBaseData ccGetInstance() {
-    if(self==null){self=new McBaseData();return self;}
-    else{return self;}
-  }//+++
+  private static McBaseData SELF = new McBaseData();
+  public static final McBaseData ccGetInstance() {return SELF;}//+++
   private McBaseData(){}//++!
   
   //===
@@ -51,9 +48,9 @@ public final class McBaseData {
   //===
   
   public static final int C_MAX_USER_ITEM = 8;
-  private static final HashMap<String, MiRecord> O_USER_KEYMAP
+  private final HashMap<String, MiRecord> cmUserKeyMap
    = new HashMap<>(C_MAX_USER_ITEM);
-  private static final HashMap<Integer, MiRecord> O_USER_IDMAP
+  private final HashMap<Integer, MiRecord> cmUserIDMap
    = new HashMap<>(C_MAX_USER_ITEM);
   
   public static final McUserRecord USER_NAME
@@ -68,9 +65,9 @@ public final class McBaseData {
   //===
   
   public static final int C_MAX_SPEC_ITEM = 64;
-  private static final HashMap<String, MiRecord> O_SPEC_KEYMAP
+  private final HashMap<String, MiRecord> cmSpecKeyMap
    = new HashMap<>(C_MAX_SPEC_ITEM);
-  private static final HashMap<Integer, MiRecord> O_SPEC_IDMAP
+  private final HashMap<Integer, MiRecord> cmSpecIDMap
    = new HashMap<>(C_MAX_SPEC_ITEM);
   
   public static final McSpecRecord SPEC_AG_CAT
@@ -88,9 +85,9 @@ public final class McBaseData {
   //===
   
   public static final int C_MAX_POWER_ITEM = 128;
-  private static final HashMap<String, MiRecord> O_POWER_KEYMAP
+  private final HashMap<String, MiRecord> cmPowerKeyMap
    = new HashMap<>(C_MAX_POWER_ITEM);
-  private static final HashMap<Integer, MiRecord> O_POWER_IDMAP
+  private final HashMap<Integer, MiRecord> cmPowerIDMap
    = new HashMap<>(C_MAX_POWER_ITEM);
   
   public static final McPowerRecord POWER_FILLER_FEEDER
@@ -128,16 +125,16 @@ public final class McBaseData {
   }//+++
   
   private static void ssAddUserRecord(MiRecord pxRecord){
-    O_USER_IDMAP.put(pxRecord.ccGetID(), pxRecord);
-    O_USER_KEYMAP.put(pxRecord.ccGetKey(), pxRecord);
+    SELF.cmUserIDMap.put(pxRecord.ccGetID(), pxRecord);
+    SELF.cmUserKeyMap.put(pxRecord.ccGetKey(), pxRecord);
   }//+++
   
   public static MiRecord ccGetUserRecord(int pxIndex){
-    return O_USER_IDMAP.getOrDefault(pxIndex, O_DUMMY_RECORD);
+    return SELF.cmUserIDMap.getOrDefault(pxIndex, O_DUMMY_RECORD);
   }//+++
   
   public static MiRecord ccGetUserRecord(String pxKey){
-    return O_USER_KEYMAP.getOrDefault(pxKey, O_DUMMY_RECORD);
+    return SELF.cmUserKeyMap.getOrDefault(pxKey, O_DUMMY_RECORD);
   }//+++
   
   //===
@@ -147,16 +144,16 @@ public final class McBaseData {
   }//+++
   
   private static void ssAddSpecRecord(MiRecord pxRecord){
-    O_SPEC_IDMAP.put(pxRecord.ccGetID(), pxRecord);
-    O_SPEC_KEYMAP.put(pxRecord.ccGetKey(), pxRecord);
+    SELF.cmSpecIDMap.put(pxRecord.ccGetID(), pxRecord);
+    SELF.cmSpecKeyMap.put(pxRecord.ccGetKey(), pxRecord);
   }//+++
   
   public static MiRecord ccGetSpecRecord(int pxIndex){
-    return O_SPEC_IDMAP.getOrDefault(pxIndex, O_DUMMY_RECORD);
+    return SELF.cmSpecIDMap.getOrDefault(pxIndex, O_DUMMY_RECORD);
   }//+++
   
   public static MiRecord ccGetSpecRecord(String pxKey){
-    return O_SPEC_KEYMAP.getOrDefault(pxKey, O_DUMMY_RECORD);
+    return SELF.cmSpecKeyMap.getOrDefault(pxKey, O_DUMMY_RECORD);
   }//+++
   
   //===
@@ -166,16 +163,16 @@ public final class McBaseData {
   }//+++
   
   private static void ssAddPowerRecord(MiRecord pxRecord){
-    O_POWER_IDMAP.put(pxRecord.ccGetID(), pxRecord);
-    O_POWER_KEYMAP.put(pxRecord.ccGetKey(), pxRecord);
+    SELF.cmPowerIDMap.put(pxRecord.ccGetID(), pxRecord);
+    SELF.cmPowerKeyMap.put(pxRecord.ccGetKey(), pxRecord);
   }//+++
   
   public static MiRecord ccGetPowerRecord(int pxIndex){
-    return O_POWER_IDMAP.getOrDefault(pxIndex, O_DUMMY_RECORD);
+    return SELF.cmPowerIDMap.getOrDefault(pxIndex, O_DUMMY_RECORD);
   }//+++
   
   public static MiRecord ccGetPowerRecord(String pxKey){
-    return O_POWER_KEYMAP.getOrDefault(pxKey, O_DUMMY_RECORD);
+    return SELF.cmPowerKeyMap.getOrDefault(pxKey, O_DUMMY_RECORD);
   }//+++
   
   //=== 
@@ -183,9 +180,9 @@ public final class McBaseData {
   public static MiRecord ccGetRecord(int pxFolder, int pxID){
     HashMap<Integer,MiRecord> lpTarget=null;
     switch(pxFolder){
-      case 0:lpTarget=O_USER_IDMAP;break;
-      case 1:lpTarget=O_SPEC_IDMAP;break;
-      case 2:lpTarget=O_POWER_IDMAP;break;
+      case 0:lpTarget=SELF.cmUserIDMap;break;
+      case 1:lpTarget=SELF.cmSpecIDMap;break;
+      case 2:lpTarget=SELF.cmPowerIDMap;break;
     }
     if(lpTarget==null){return O_DUMMY_RECORD;}
     return lpTarget.getOrDefault(pxID, O_DUMMY_RECORD);
@@ -197,9 +194,9 @@ public final class McBaseData {
     XML lpXML=McConst.ccNewXML();
     if(lpXML==null){return null;}
     ArrayList<MiRecord> lpRollerList = new ArrayList<>();
-    lpRollerList.addAll(O_USER_KEYMAP.values());
-    lpRollerList.addAll(O_SPEC_KEYMAP.values());
-    lpRollerList.addAll(O_POWER_KEYMAP.values());
+    lpRollerList.addAll(SELF.cmUserKeyMap.values());
+    lpRollerList.addAll(SELF.cmSpecKeyMap.values());
+    lpRollerList.addAll(SELF.cmPowerKeyMap.values());
     for(MiRecord it:lpRollerList){
       XML lpInfoXML = lpXML.addChild(it.ccGetType());
       lpInfoXML.setString("key", it.ccGetKey());
