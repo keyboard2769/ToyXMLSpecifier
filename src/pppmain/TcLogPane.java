@@ -27,7 +27,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-
 import static pppmain.MainFrame.C_V_OS;
 import static pppmain.MainFrame.C_V_PWD;
 import static pppmain.MainFrame.C_V_NEWLINE;
@@ -43,17 +42,11 @@ public final class TcLogPane extends JPanel {
   
   //===
   
-  private static JTextArea pbArea;
-  private static JTextField pbField;
+  private final JTextArea pbArea;
+  private final JTextField pbField;
   
   private TcLogPane(){
     super(new BorderLayout());
-    ssSetupLogPane();
-  }//++!
-
-  //===
-  
-  private void ssSetupLogPane(){
     
     //-- component ** area
     String lpHellow="init:mini_kosui 0.0.1.0\n";
@@ -86,8 +79,9 @@ public final class TcLogPane extends JPanel {
     add(lpCenterPane,BorderLayout.CENTER);
     add(pbField,BorderLayout.PAGE_END);
     setBorder(BorderFactory.createEtchedBorder());
-    
-  }//+++
+  }//++!
+
+  //===
   
   public static final void ccStackln(String pxLine){
     ccStackln(pxLine, null);
@@ -96,13 +90,13 @@ public final class TcLogPane extends JPanel {
   public static final void ccStackln(String pxTag, Object pxVal){
     if(pxTag==null){return;}
     if(pxVal==null){
-      pbArea.append(pxTag+C_V_NEWLINE);
+      SELF.pbArea.append(pxTag+C_V_NEWLINE);
     }else{
-      pbArea.append(pxTag+":"+pxVal.toString()+C_V_NEWLINE);
+      SELF.pbArea.append(pxTag+":"+pxVal.toString()+C_V_NEWLINE);
     }//..?
-    int lpLength = pbArea.getText().length();
-    pbArea.setSelectionStart(lpLength-1);
-    pbArea.setSelectionEnd(lpLength);
+    int lpLength = SELF.pbArea.getText().length();
+    SELF.pbArea.setSelectionStart(lpLength-1);
+    SELF.pbArea.setSelectionEnd(lpLength);
   }//+++
 
  }//***eof

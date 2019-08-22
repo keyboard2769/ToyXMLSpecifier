@@ -39,6 +39,8 @@ import javax.swing.JComponent;
  * @author N216
  */
 public class ScConst {
+  
+  public static final String C_M_INVALID = "";
 
   private static ScConst self = null;
   public static final ScConst ccGetInstance() {
@@ -47,12 +49,6 @@ public class ScConst {
   }//+++
   
   //===
-  
-  public static final String
-    C_M_INVALID = "";
-  
-  private static final JFileChooser
-    O_FILE_CHOOSER = new JFileChooser(MainFrame.C_V_PWD);
   
   //===
   
@@ -172,6 +168,26 @@ public class ScConst {
     JOptionPane.showMessageDialog(MainFrame.ccGetFrame(),pxMessage);
   }//+++
   
+  public static final void ccWarnBox(String pxMessage){
+    if(!ccIsEDT()){return;}
+    JOptionPane.showMessageDialog(
+      MainFrame.ccGetFrame(),
+      pxMessage,
+      MainFrame.ccGetFrame()!=null?MainFrame.ccGetFrame().getTitle():"!!",
+      JOptionPane.WARNING_MESSAGE
+    );
+  }//+++
+  
+  public static final void ccErrorBox(String pxMessage){
+    if(!ccIsEDT()){return;}
+    JOptionPane.showMessageDialog(
+      MainFrame.ccGetFrame(),
+      pxMessage,
+      MainFrame.ccGetFrame()!=null?MainFrame.ccGetFrame().getTitle():"!!",
+      JOptionPane.ERROR_MESSAGE
+    );
+  }//+++
+  
   public static final boolean ccYesOrNoBox(String pxMessage){
     if(!ccIsEDT()){return false;}
     int i=JOptionPane.showConfirmDialog(
@@ -192,6 +208,11 @@ public class ScConst {
     if(lpRes!=null){return lpRes;}
     else{return "";}
   }//+++
+  
+  //===
+  
+  private static final JFileChooser
+    O_FILE_CHOOSER = new JFileChooser(MainFrame.C_V_PWD);
   
   public static final File ccGetFileByFileChooser(char pxMode){
     if(ccIsEDT()){

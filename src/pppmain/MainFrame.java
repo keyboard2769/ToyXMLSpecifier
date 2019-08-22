@@ -24,8 +24,8 @@ import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.io.File;
+import java.util.LinkedList;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -65,23 +65,90 @@ public class MainFrame {
   private static void ssSetupFrame() {
     
     //-- pre
+    //-- pre ** init nessesarity
     ScConst.ccInitDefaultFont();
     McTranslator.ccGetInstance().ccInit();
-    if(ScConst.ccYesOrNoBox("load translation file??")){
-      File lpFile = ScConst.ccGetFileByFileChooser('f');
-      boolean lpCanLoad=ccVarifyFileForLoading(lpFile);
-      boolean lpIsCSV=ccVarifyCSVFileExtension(lpFile);
-      if(lpCanLoad&&lpIsCSV){
-        McTranslator.ccGetInstance().ccParseCSV(lpFile);
+    
+    //-- pre ** load resource
+    //-- pre ** load resource ** local const
+    String lpRelativeResourceFolderHD
+      = C_V_PATHSEP+"srcc"+C_V_PATHSEP+"pppresource"+C_V_PATHSEP;
+    String lpAbsoluteResourceRootHD
+      = C_V_PWD+lpRelativeResourceFolderHD;
+    String lpTextResourceFileName="rc.xml";
+    String lpTranslationResourceFileName="tr.csv";
+    String[] lpDesResouceFileName={
+      lpTextResourceFileName,
+      lpTranslationResourceFileName
+    };
+    /* 4 */VcConst.ccLogln("mf-pwd", C_V_PWD);
+    /* 4 */VcConst.ccLogln("mf-abpp", lpAbsoluteResourceRootHD);
+    
+    //-- pre ** load resource ** veryfy and retake
+    File lpFolderHD=new File(lpAbsoluteResourceRootHD);
+    boolean lpIsHardcodedValid=ccVerifyResourceFileExistence
+      (lpFolderHD, lpDesResouceFileName);
+    File lpTextResource=null, lpTranslationResource=null;
+    if(lpIsHardcodedValid){
+      lpTextResource = new File
+        (lpAbsoluteResourceRootHD+C_V_PATHSEP+lpTextResourceFileName);
+      lpTranslationResource = new File
+        (lpAbsoluteResourceRootHD+C_V_PATHSEP+lpTranslationResourceFileName);
+    }else{
+      if(
+        !ScConst.ccYesOrNoBox
+          ("failed to locate resource file\n choose your self?")
+      ){
+        ssQuit("--user denialed to locate resource manually");
       }//..?
+      File lpFolderFC;
+      while(true){
+        lpFolderFC = ScConst.ccGetFileByFileChooser('d');
+        if(lpFolderFC==null){
+          ScConst.ccWarnBox("this may load no resource file");
+          break;
+        }//..?
+        boolean lpIsSelectedValid=ccVerifyResourceFileExistence
+          (lpFolderFC, lpDesResouceFileName);
+        if(lpIsSelectedValid){
+          lpTextResource=new File
+            (lpFolderFC.getAbsolutePath()
+              +C_V_PATHSEP+lpTextResourceFileName);
+          lpTranslationResource=new File
+            (lpFolderFC.getAbsolutePath()
+              +C_V_PATHSEP+lpTranslationResourceFileName);
+          break;
+        }else{
+          ScConst.ccErrorBox("cant locate resource file");
+        }//..?
+      }//..~
     }//..?
-    if(ScConst.ccYesOrNoBox("load text resource file??")){
-      File lpFile = ScConst.ccGetFileByFileChooser('f');
-      boolean lpCanLoad=ccVarifyFileForLoading(lpFile);
-      boolean lpIsXML=ccVarifyXMLFileExtension(lpFile);
-      if(lpCanLoad&&lpIsXML){
-        McTranslator.ccGetInstance().ccParseXML(lpFile);
+    
+    //-- pre ** load resource ** veryfy and parse
+    if(lpTextResource==null||lpTranslationResource==null){
+      ScConst.ccWarnBox("booting with out resource");
+    }else{
+      
+      //-- 
+      boolean lpIsTextResourceValid
+       = ccVerifyFileForLoading(lpTextResource)
+       &&ccVerifyXMLFileExtension(lpTextResource);
+      if(lpIsTextResourceValid){
+        McTranslator.ccGetInstance().ccParseXML(lpTextResource);
+      }else{
+        ScConst.ccErrorBox("not loading text resource cuz it did pass");
       }//..?
+      
+      //--
+      boolean lpIsTranslationResourceValid
+       = ccVerifyFileForLoading(lpTranslationResource)
+       &&ccVerifyCSVFileExtension(lpTranslationResource);
+      if(lpIsTranslationResourceValid){
+        McTranslator.ccGetInstance().ccParseCSV(lpTranslationResource);
+      }else{
+        ScConst.ccErrorBox("not loading translation cuz it did pass");
+      }//..?
+      
     }//..?
     
     //-- help menu
@@ -107,7 +174,7 @@ public class MainFrame {
     
     //-- menu bar
     JMenu lpFileMenu=new JMenu(McTranslator.tr("file"));
-    lpFileMenu.setMnemonic(KeyEvent.VK_F);
+    lpFileMenu.setMnemonic('f');
     lpFileMenu.add(lpOperateItem);
     lpFileMenu.add(new JSeparator(SwingConstants.HORIZONTAL));
     lpFileMenu.add(lpLoadItem);
@@ -116,7 +183,7 @@ public class MainFrame {
     lpFileMenu.add(lpQuitItem);
     
     JMenu lpHelpMenu = new JMenu(McTranslator.tr("help"));
-    lpHelpMenu.setMnemonic(KeyEvent.VK_H);
+    lpHelpMenu.setMnemonic('h');
     lpHelpMenu.add(lpInfoItem);
     
     JMenuBar lpMenuBar = new JMenuBar();
@@ -210,16 +277,16 @@ public class MainFrame {
   
   private static void aaLoad(){
     File lpFile = ScConst.ccGetFileByFileChooser('f');
-    if(!ccVarifyFileForLoading(lpFile)){return;}
-    if(!ccVarifyXMLFileExtension(lpFile)){return;}
+    if(!ccVerifyFileForLoading(lpFile)){return;}
+    if(!ccVerifyXMLFileExtension(lpFile)){return;}
     XML lpXML = McConst.ccLoadXML(lpFile);
     McBaseData.ccParseXML(lpXML);
   }//+++
   
   private static void aaSaveas(){
     File lpFile = ScConst.ccGetFileByFileChooser('f');
-    if(!ccVarifyFileForSaving(lpFile)){return;}
-    if(!ccVarifyXMLFileExtension(lpFile)){return;}
+    if(!ccVerifyFileForSaving(lpFile)){return;}
+    if(!ccVerifyXMLFileExtension(lpFile)){return;}
     XML lpXML=McBaseData.ccGenerateXML();
     if(lpXML==null){
       ccStackln("[BAD]failed to generate xml object from base data.");
@@ -230,7 +297,36 @@ public class MainFrame {
   
   //=== util
   
-  private static boolean ccVarifyFileForLoading(File pxFile){
+  private static final
+  boolean ccVerifyResourceFileExistence(File pxFolder, String[] pxDesFileName){
+    if(!ccVerifyFolder(pxFolder)){return false;}
+    if(pxDesFileName==null){return false;}
+    LinkedList<String> lpFolderList = new LinkedList<>();
+    for(File it:pxFolder.listFiles()){
+      lpFolderList.add(it.getName());
+    }//..~
+    boolean lpRes=true;
+    for(String it:pxDesFileName){
+      lpRes&=lpFolderList.contains(it);
+    }//..~
+    return lpRes;
+  }//+++
+  
+  public static final void ccReadupFolderContent(File pxFolder){
+    if(!ccVerifyFolder(pxFolder)){return;}
+    for(File it:pxFolder.listFiles()){
+      VcConst.ccPrintln("r-subf", it.getName());
+    }//+++
+  }//+++
+  
+  public static final boolean ccVerifyFolder(File pxFolder){
+    if(pxFolder==null){ccStackln("[CANCEL]invalid selection");return false;}
+    if(!pxFolder.isAbsolute()){ccStackln("[BAD]bad path");return false;}
+    if(!pxFolder.isDirectory()){ccStackln("[BAD]not folder");return false;}
+    return true;
+  }//+++
+  
+  private static boolean ccVerifyFileForLoading(File pxFile){
     if(pxFile==null){ccStackln("[CANCEL]invalid selection");return false;}
     if(!pxFile.isAbsolute()){ccStackln("[BAD]bad path");return false;}
     if(!pxFile.exists()){ccStackln("[BAD]bad accessment");return false;}
@@ -241,7 +337,7 @@ public class MainFrame {
     return true;
   }//+++
   
-  private static boolean ccVarifyFileForSaving(File pxFile){
+  private static boolean ccVerifyFileForSaving(File pxFile){
     if(pxFile==null){ccStackln("[CANCEL]invalid selection");return false;}
     if(!pxFile.isAbsolute()){ccStackln("[BAD]bad path");return false;}
     if(pxFile.exists()){
@@ -255,15 +351,15 @@ public class MainFrame {
     }else{return true;}//..?
   }//+++
   
-  private static boolean ccVarifyXMLFileExtension(File pxFile){
-    return ccVarifyFileExtension(pxFile, "^.+(.xml)$");
+  private static boolean ccVerifyXMLFileExtension(File pxFile){
+    return ccVerifyFileExtension(pxFile, "^.+(.xml)$");
   }//+++
   
-  private static boolean ccVarifyCSVFileExtension(File pxFile){
-    return ccVarifyFileExtension(pxFile, "^.+(.csv)$");
+  private static boolean ccVerifyCSVFileExtension(File pxFile){
+    return ccVerifyFileExtension(pxFile, "^.+(.csv)$");
   }//+++
   
-  private static boolean ccVarifyFileExtension(File pxFile, String pxRegex){
+  private static boolean ccVerifyFileExtension(File pxFile, String pxRegex){
     if(pxFile==null){ccStackln("[CANCEL]invalid selection");return false;}
     if(!VcConst.ccIsValidString(pxRegex)){
       System.err.println("pppmain.MainFrame.ccVarifyFileExtension()::"
@@ -293,21 +389,4 @@ public class MainFrame {
     System.out.println("TemlateConsoleFrame.main()::over");
   }//++!
   
-  /* ** 
-   * ** plan
-   * 
-   * [todo]::make all singleton class member non static
-   * [todo]::let pre loading more automatic
-   * 
-   * 
-   * 
-   *
-   * ** done
-   * 
-   * 
-   * 
-   *  
-   * 
-   */
-
 }//***eof

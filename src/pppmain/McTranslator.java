@@ -30,18 +30,18 @@ import processing.data.TableRow;
  */
 public class McTranslator {
   
-  private static final McTranslator SELF = new McTranslator();
-  public static final McTranslator ccGetInstance(){return SELF;}//+++\
-  private McTranslator(){}
-  
-  //===
-  
   public static final String C_FIELDKEY_TYPE = "#type";
   public static final String C_FIELDKEY_KEY = "key";
   public static final String C_FIELDKEY_EN = "en";
   public static final String C_FIELDKEY_JP = "jp";
   public static final String C_FIELDKEY_ZH = "zh";
   public static final String C_FIELDVALUE_TR = "tr";
+  
+  private static final McTranslator SELF = new McTranslator();
+  public static final McTranslator ccGetInstance(){return SELF;}//+++\
+  private McTranslator(){}
+  
+  //===
   
   private final HashMap<String, String> lpEnglishDict=new HashMap<>();
   private final HashMap<String, String> lpChineseDict=new HashMap<>();
@@ -70,10 +70,9 @@ public class McTranslator {
     for(XML it:lpXML.getChildren()){
       if(it.getName().equals(C_FIELDVALUE_TR)){
         lpKey=it.getString(C_FIELDKEY_KEY, "<nn>");
-        //[todo]::make safer method for getting child content
-        lpEn=it.getChild(C_FIELDKEY_EN).getContent();
-        lpJp=it.getChild(C_FIELDKEY_JP).getContent();
-        lpZh=it.getChild(C_FIELDKEY_ZH).getContent();
+        lpEn=McConst.ccGetXMLChildContent(it, C_FIELDKEY_EN, "...");
+        lpJp=McConst.ccGetXMLChildContent(it, C_FIELDKEY_JP, "...");
+        lpZh=McConst.ccGetXMLChildContent(it, C_FIELDKEY_ZH, "...");
         /* 4 */VcConst.ccLogln("key", lpKey);
         /* 4 */VcConst.ccLogln("en", lpEn);
         /* 4 */VcConst.ccLogln("jp", lpJp);
@@ -93,7 +92,7 @@ public class McTranslator {
     
     
     //-- validation
-    boolean lpColumnCheck=McConst.ccValidateCSVColumn(lpCSV, new String[]{
+    boolean lpColumnCheck=McConst.ccVerifyCSVColumn(lpCSV, new String[]{
       C_FIELDKEY_TYPE,C_FIELDKEY_KEY,
       C_FIELDKEY_EN,C_FIELDKEY_JP,C_FIELDKEY_ZH
     });
@@ -102,12 +101,11 @@ public class McTranslator {
     //-- looping
     String lpType,lpKey,lpEn,lpJp,lpZh;
     for(TableRow it:lpCSV.rows()){
-      //[w][todo]::make safer method for getting row content
-      lpType=it.getString(C_FIELDKEY_TYPE);
-      lpKey=it.getString(C_FIELDKEY_KEY);
-      lpEn=it.getString(C_FIELDKEY_EN);
-      lpJp=it.getString(C_FIELDKEY_JP);
-      lpZh=it.getString(C_FIELDKEY_ZH);
+      lpType=McConst.ccGetColumnValue(it, C_FIELDKEY_TYPE, "...");
+      lpKey=McConst.ccGetColumnValue(it, C_FIELDKEY_KEY, "...");
+      lpEn=McConst.ccGetColumnValue(it, C_FIELDKEY_EN, "...");
+      lpJp=McConst.ccGetColumnValue(it, C_FIELDKEY_JP, "...");
+      lpZh=McConst.ccGetColumnValue(it, C_FIELDKEY_ZH, "...");
       if(lpType.equals(C_FIELDVALUE_TR)&&VcConst.ccIsValidString(lpKey)){
         /* 4 */VcConst.ccLogln(lpKey, lpEn);
         lpEnglishDict.put(lpKey, lpEn);
@@ -115,6 +113,7 @@ public class McTranslator {
         lpChineseDict.put(lpKey, lpZh);
       }//..?
     }//..~
+    
   }//+++
   
   //===

@@ -19,12 +19,8 @@
 package pppmain;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Set;
 import processing.data.XML;
 import processing.data.Table;
@@ -87,12 +83,12 @@ public final class McConst {
   }//+++
   
   public static final
-  boolean ccValidateCSVColumn(Table pxCSV, String[] pxColumns){
+  boolean ccVerifyCSVColumn(Table pxCSV, String[] pxDesColumn){
     
     //-- precheck
     if(pxCSV==null){return false;}
-    if(pxColumns==null){return false;}
-    if(pxColumns.length<=1){
+    if(pxDesColumn==null){return false;}
+    if(pxDesColumn.length<=1){
       System.err.println("pppmain.McConst.ccValidateCSVColumn()::"
        + "single column form is forbidden.");
       return false;
@@ -113,7 +109,7 @@ public final class McConst {
       = new HashSet<>(Arrays.asList(pxCSV.getColumnTitles()));
     boolean lpTester=true;
     /* 4 */for(String it:lpTitleSet){VcConst.ccLogln("csv-c", it);}//..~
-    for(String it:pxColumns){
+    for(String it:pxDesColumn){
       /* 4 */VcConst.ccLogln("csvc-given", it);
       lpTester&=lpTitleSet.contains(it);
     }//..~
@@ -133,11 +129,21 @@ public final class McConst {
         + e.getMessage());
       lpCell=null;
     }//..?
-    
-    //[head]::
-    
     if(lpCell==null){return pxOrDefault;}
     else{return lpCell;}
+  }//+++
+  
+  static public final
+  String ccGetXMLChildContent(
+    XML pxXML, String pxChildName, String pxOrDefault
+  ){
+    if(pxXML==null){return pxOrDefault;}
+    if(!VcConst.ccIsValidString(pxChildName)){return pxOrDefault;}
+    XML lpChild = pxXML.getChild(pxChildName);
+    if(lpChild==null){return pxOrDefault;}
+    String lpContent=lpChild.getContent();
+    if(lpContent==null){return pxOrDefault;}
+    else{return lpContent;}
   }//+++
 
  }//***eof
