@@ -3,9 +3,9 @@ XML Specifier
 pilot project for parsing xml/csv file and independent localization strategy
 
 ## tabs
-- the "user" tab is a mimic to "" sheet
-- the "spec" tab is a mimic to "" sheet
-- the "power" tab is a mimic to "" sheet
+- the "user" tab is a mimic to "向先" sheet
+- the "spec" tab is a mimic to "仕様" sheet
+- the "power" tab is a mimic to "動力明細" sheet
 
 ## values
 - basically one record only has one value
